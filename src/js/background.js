@@ -1,5 +1,5 @@
 browser.webRequest.onHeadersReceived.addListener(
- async (details)=>{
+ async function onHeadersReceivedListener(details) {
 	let tabId=details.tabId;
 
 	let securityInfo = await browser.webRequest.getSecurityInfo(details.requestId,{certificateChain:true});
