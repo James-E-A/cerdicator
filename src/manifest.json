@@ -1,0 +1,29 @@
+{
+	"manifest_version": 2,
+	"name": "cerdicator",
+	"version": "0.0.2",
+
+	"description": "nice",
+
+	"permissions": [
+		"webRequest","webRequestBlocking",
+		"<all_urls>"
+	],
+
+	"background": {
+		"scripts": ["js/background.js","js/util.js"]
+	},
+
+	"browser_action": {
+		"default_title": "cerdicator",
+		"default_icon": "images/Twemoji12_1f9ff.svg"
+	},
+
+	"web_accessible_resources": ["db/*"],
+
+	"browser_specific_settings": {
+	 "gecko": {
+		"id": "{9fb104df-0496-4b3a-bd43-08e56d46766e}"
+	 }
+	}
+}
