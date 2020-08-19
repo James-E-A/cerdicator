@@ -1,9 +1,11 @@
 browser.webRequest.onHeadersReceived.addListener(
  async function onHeadersReceivedListener(details) {
 	let tabId=details.tabId;
+	let requestId=details.requestId;
+//	console.log('onHeadersReceived event triggered!',{details:details});
 
 	let securityInfo = await browser.webRequest.getSecurityInfo(details.requestId,{certificateChain:true});
-//	console.log('onHeadersReceived event triggered\n\nMore information:',{details:details,securityInfo:securityInfo});
+//	console.log({requestId:requestId,securityInfo:securityInfo});
 
 	let rootCert,fp,rootHost,path;
 	try {
@@ -31,6 +33,8 @@ browser.webRequest.onHeadersReceived.addListener(
 	 }
 	);
 
+	return {};
+
  },
  {
   types:['main_frame'], //TODO: handle this "appropriately"…whatever that means…
@@ -40,6 +44,6 @@ browser.webRequest.onHeadersReceived.addListener(
 //idea: blockingly fail if cert fingerprint is different between the main_frame and children?
   urls:['<all_urls>']
  },
- ['blocking']
+ ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
 );
 
