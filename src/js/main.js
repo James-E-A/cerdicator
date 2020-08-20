@@ -1,49 +1,42 @@
 browser.webRequest.onHeadersReceived.addListener(
  async function onHeadersReceivedListener(details) {
+//	console.log('onHeadersReceived event triggered!',{details:details});
+
 	let tabId=details.tabId;
 	let requestId=details.requestId;
-//	console.log('onHeadersReceived event triggered!',{details:details});
 
 	let securityInfo = await browser.webRequest.getSecurityInfo(details.requestId,{certificateChain:true});
 //	console.log({requestId:requestId,securityInfo:securityInfo});
 
-	let rootCert,fp,rootHost,path;
-	try {
-		rootCert=securityInfo.certificates[securityInfo.certificates.length-1];
-		fp=rootCert.fingerprint.sha256;
-		rootHost=sha256fp_host[fp];
-		if(!rootHost) throw rootCert;
-		path=`images/root_icons/${rootHost}.ico`;
-	} catch {
-		console.warn('Unknown root CA',rootCert);
-		path = "images/Twemoji12_26a0.svg";
-	}
+	browser.tabs.sendMessage(tabId,{onHeadersReceived:details,securityInfo:securityInfo});
 
-	browser.browserAction.setIcon(
-	 {
-		//tabId: tabId, //TODO: WHY DOES UNCOMMENTING THIS MAKE IT ONLY LAST 0.01s???
-		path: path
-	 }
-	);
-
-	browser.browserAction.setTitle(
-	 {
-		//tabId: tabId, //TODO????????????
-		title: rootHost||`?? ${fp} ??`
-	 }
-	);
-
-	return {};
+	return {};//TODO: maybe remove this line
 
  },
  {
-  types:['main_frame'], //TODO: handle this "appropriately"…whatever that means…
-//threat model: attacker intercepting non-main_frame requests
-//or intercepting-then-refreshing-it-back-before-anyone-notices
-
-//idea: blockingly fail if cert fingerprint is different between the main_frame and children?
+  types:['main_frame'],//TODO remove this, I just put it in for debugging
   urls:['<all_urls>']
  },
  ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
 );
 
+browser.webRequest.onCompleted.addListener(
+ async function browserActionImageUpdate(details) {
+	console.log("Beginning onCompleted...",{details:details});
+
+	let tabId=details.tabId;
+	let browserActionSpec=(
+	 await browser.tabs.sendMessage(tabId,{onCompleted:details}) );
+	console.log("Tab returned:",browserActionSpec);//WHY IS THIS UNDEFINED AAARGH
+
+	for(let prop in browserActionSpec){
+		let cmd={tabId:tabId};
+		Object.assign(cmd,browserActionSpec[prop]);
+		browser.browserAction['set'+prop](cmd);
+	}
+ },
+ {
+  types:['main_frame'],
+  urls: ["<all_urls>"]
+ }
+);
