@@ -14,17 +14,21 @@ const host_country = new Object();
 	JSON.parse(data).forEach(ca=>{
 		let sha256fp=ca["SHA-256 Fingerprint"].replaceAll(/(\w{2})(?=\w)/g,'$1:');
 
-		let hostParts=(new URL(ca["Certification Practice Statement (CPS)"])).hostname.split('.')
+		let hostParts=(new URL(ca["Company Website"])).hostname.split('.')
 		//www isn't a real subdomain
 		if(hostParts[0]=='www') hostParts.splice(0,1);
 		//neither is pki
 		if(hostParts[0]=='pki') hostParts.splice(0,1);
-		//*.gov.<ccTLD> is just *from* that country
-		if(hostParts[hostParts.length-2]=='gov' && hostParts[hostParts.length-1].length==2){
-			hostParts.splice(0,[hostParts.length-1]);
-			host_country[sha256fp]=hostParts[0];
+		//.<ccTLD> is from that country
+		let reducedHostname;
+		if(hostParts[hostParts.length-1].length==2){
+			//gov is also a non-semantic subdomain
+			if(hostParts[hostParts.length-2]=='gov') hostParts.splice(0,hostParts.length-1);
+			reducedHostname=hostParts.join('.');
+			host_country[reducedHostname]=hostParts[hostParts.length-1].toUpperCase();
+		} else {
+			reducedHostname=hostParts.join('.');
 		}
-		let reducedHostname=hostParts.join('.');
 
 		sha256fp_host[sha256fp]=reducedHostname;
 	});
