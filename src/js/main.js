@@ -39,7 +39,7 @@ browser.webRequest.onBeforeRequest.addListener(
 	let tabId=details.tabId;
 	if(rootCertsByTab[tabId]===undefined) rootCertsByTab[tabId]=new Set();
 	else rootCertsByTab[tabId].clear();
-	console.log(rootCertsByTab);
+	//console.log(rootCertsByTab);
 	//TODO: fix memory leak
  },
  {
@@ -57,13 +57,13 @@ browser.webRequest.onHeadersReceived.addListener(
 	let requestId=details.requestId;
 
 	let securityInfo = await browser.webRequest.getSecurityInfo(details.requestId,{certificateChain:true});
-	console.log({tabId:tabId,requestId:requestId,securityInfo:securityInfo});
+	//console.log({tabId:tabId,requestId:requestId,securityInfo:securityInfo});
 
 	try {
 		if(!(securityInfo.certificates.length>0)) throw securityInfo;
 		let rootCert=securityInfo.certificates[securityInfo.certificates.length-1];
 		rootCertsByTab[tabId].add(rootCert.fingerprint.sha256||null);
-		console.log(rootCertsByTab);
+		//console.log(rootCertsByTab);
 	} catch(e) {
 		rootCertsByTab[tabId].add(null);
 	}

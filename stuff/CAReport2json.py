@@ -8,5 +8,5 @@ import sys,csv,json
 #this script is nearly objective
 with open('IncludedCACertificateReportCSVFormat') as f:
 	CACertificateReport=list(csv.DictReader(f))
-	with open('IncludedCACertificateReportJSONFormat','w') as g:
-		json.dump(CACertificateReport,g,indent=2)
+with open('IncludedCACertificateReportJSONFormat','w') as f:
+	json.dump(CACertificateReport,g,indent=2)
