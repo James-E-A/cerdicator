@@ -6,6 +6,14 @@ function getAsset(path){
 	return xhr.response;
 }
 
+const secTypes={
+	Mozilla: 0,
+	MITM:    1,
+	aRoot:   2,
+	insecure:255
+}
+Object.freeze(secTypes);
+
 const sha256fp_host = new Object();
 const host_country = new Object();
 
