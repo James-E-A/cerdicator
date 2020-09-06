@@ -51,6 +51,7 @@ function genBrowserActionSpec(secType,certChain){
 		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
 		return {
 			Icon: {path:`images/root_icons/${rootHost}.ico`},
+			Title: {title: `\uD83E\uDD8A ${rootHost}`},
 		//	BadgeText: {text: '\u2026'}; //TODO?
 		//	BadgeBackgroundColor: {color: 'LimeGreen'};
 		};
@@ -58,6 +59,7 @@ function genBrowserActionSpec(secType,certChain){
 	 case secTypes.MITM:
 		return {
 			Icon: {path:`images/Twemoji_1f441.svg`},
+			Title: {title: "MITM TLS Proxy\n(Your IT team can see what you're doing)"},
 			BadgeText: {text: '\u2026'}, //TODO: ...something?
 			BadgeBackgroundColor: {color: 'Fuchsia'}
 		};
@@ -71,6 +73,7 @@ function genBrowserActionSpec(secType,certChain){
 		}
 		return {
 			Icon: {path:iconPath},
+			Title: {title: rootHost},
 			BadgeText: {text: '\u2026'}, //TODO: which aRoot?
 			BadgeBackgroundColor: {color: 'Cyan'}
 		};
