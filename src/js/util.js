@@ -7,15 +7,19 @@ function getAsset(path){
 }
 
 const secTypes={
-	Mozilla: 0,
-	MITM:    1,
-	aRoot:   2,
-	insecure:255
+	Mozilla:       0,
+	MITM:          1,
+	aRoot:         2,
+	indeterminate: 254,
+	insecure:      255
 }
 Object.freeze(secTypes);
 
 const sha256fp_host = new Object();
 const host_country = new Object();
+
+const sha256fp_host_alt = {'07:ED:BD:82:4A:49:88:CF:EF:42:15:DA:20:D4:8C:2B:41:D7:15:29:D7:C9:00:F5:70:92:6F:27:7C:C2:30:C5':'cacert.org'};Object.freeze(sha256fp_host_alt);
+//TODO TODO TODO TODO TODO TODO TODO
 
 {
 	let data=getAsset("db/IncludedCACertificateReportJSONFormat");

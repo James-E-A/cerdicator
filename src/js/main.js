@@ -8,6 +8,7 @@ function identifySecType(securityInfo){
 		// even deprived so much as *access to* their
 		// cert chain, so we cannot evaluate them!!
 		let certChain=securityInfo.certificates;
+		if(!certChain.length) throw {status:'emptyCertChainButItsSecure',securityInfo:securityInfo};
 		let rootCert=certChain[certChain.length-1];
 		//Now, this connection is...
 		if(rootCert.isBuiltInRoot){
@@ -15,7 +16,7 @@ function identifySecType(securityInfo){
 			return secTypes.Mozilla;
 		} else if(!rootCert.isUntrusted) {
 		 //...supported by a Non-Mozilla cert...
-		 if(true){ //TODO
+		 if(isItMITM(rootCert)){ //TODO
 			//...TLS MITM proxy
 			return secTypes.MITM;
 		 } else {
@@ -24,49 +25,64 @@ function identifySecType(securityInfo){
 		 }
 		} else {
 			//???
-			console.warn("THIS SHOULD NEVER HAPPEN...?");
-			throw {status:'WTF',securityInfo:securityInfo};
+			throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
 		}
 	} catch(e) {
 		switch(e.status){
 		 case 'insecure':
 			return secTypes.insecure;
 		 break;
+		 case 'emptyCertChainButItsSecure':
+			//TODO: find out whytf this happens sometimes
+			console.warn(e.status||e,securityInfo);
+			return secTypes.indeterminate;
+		 break;
 		 default:
+			console.error(e.status||e,securityInfo);
 			return -1;
 		}
 	}
 }
 
 function genBrowserActionSpec(secType,certChain){
+	let rootHost,iconPath;
 	switch(secType){
 	 case secTypes.Mozilla:
-		let rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
+		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
 		return {
 			Icon: {path:`images/root_icons/${rootHost}.ico`},
-		//	BadgeText: {Text: '\u2026'}; //TODO?
-		//	BackgroundColor: {color: 'LimeGreen'};
+		//	BadgeText: {text: '\u2026'}; //TODO?
+		//	BadgeBackgroundColor: {color: 'LimeGreen'};
 		};
 	 break;
 	 case secTypes.MITM:
 		return {
-			Icon: {path:`images/Twemoji_2716.svg`},
-			BadgeText: {Text: '\u2026'}, //TODO: ...something?
-			BackgroundColor: {color: 'Fuchsia'}
+			Icon: {path:`images/Twemoji_1f441.svg`},
+			BadgeText: {text: '\u2026'}, //TODO: ...something?
+			BadgeBackgroundColor: {color: 'Fuchsia'}
 		};
 	 break;
 	 case secTypes.aRoot:
+		rootHost=sha256fp_host_alt[certChain[certChain.length-1].fingerprint.sha256];
+		if(rootHost){
+			iconPath=`images/alt_root_icons/${rootHost}.ico`;
+		} else {
+			iconPath='images/Twemoji_1f50f.svg';
+		}
 		return {
-			Icon: {path:`images/Twemoji_1f50f.svg`},
+			Icon: {path:iconPath},
 			BadgeText: {text: '\u2026'}, //TODO: which aRoot?
-			BackgroundColor: {color: 'Cyan'}
+			BadgeBackgroundColor: {color: 'Cyan'}
 		};
+	 break;
+	 case secTypes.indeterminate:
+		return {} //TODO???
 	 break;
 	 default:
 		return {
 			Icon: {path:`images/Twemoji_2716.svg`},
 		//	BadgeText: {text: '\u2026'};
-		//	BackgroundColor: {color: 'Grey'};
+		//	BadgeBackgroundColor: {color: 'Grey'};
 		};
 	}
 }
@@ -77,7 +93,14 @@ function updateTabBrowserAction(tabId,browserActionSpec){
 		Object.assign(cmd,browserActionSpec[prop]);
 		Object.assign(cmd,{tabId:tabId});
 		browser.browserAction['set'+prop](cmd);
-		console.log(`browser.browserAction['${'set'+prop}'](${JSON.stringify(cmd)});`);
+	}
+}
+
+function isItMITM(cert){
+	if(cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt){
+		return false;
+	} else {
+		return true;
 	}
 }
 
