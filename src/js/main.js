@@ -1,39 +1,41 @@
 function identifySecType(securityInfo){
 	try {
-		if(securityInfo.state!='secure') throw {status:'insecure',securityInfo:securityInfo};
-		//TODO: complain to mozilla for better access
-		// to ad-hoc/TOFU/self-signed connections.
-		//Not only do they always show state='insecure',
-		// (which is ARGUABLY correct,) but we're
-		// even deprived so much as *access to* their
-		// cert chain, so we cannot evaluate them!!
+		//TODO/FIXME: Mozilla doesn't provide
+		//any access whatsoever to self-signed
+		//or otherwise nominally-invalid certs
+		// https://discourse.mozilla.org/t/webrequest-getsecurityinfo-cant-get-self-signed-tofu-exception-certificates/67135
+		if(securityInfo.state!='secure'){
+			//once the above is fixed, this if-block
+			//will have to be factored out
+			return secTypes.insecure;
+		}
 		let certChain=securityInfo.certificates;
-		if(!certChain.length) throw {status:'emptyCertChainButItsSecure',securityInfo:securityInfo};
+		if(!certChain.length) {
+			//TODO: find out whytf this happens sometimes
+			throw {status:'emptyCertChainButItsSecure',securityInfo:securityInfo};
+		}
+
 		let rootCert=certChain[certChain.length-1];
+
 		//Now, this connection is...
 		if(rootCert.isBuiltInRoot){
 			//...Mozilla-supported
 			return secTypes.Mozilla;
 		} else if(!rootCert.isUntrusted) {
-		 //...supported by a Non-Mozilla cert...
-		 if(isItMITM(rootCert)){ //TODO
-			//...TLS MITM proxy
-			return secTypes.MITM;
-		 } else {
-			//...alternative Root CA
-			return secTypes.aRoot;
-		 }
-		} else {
-			//???
-			throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
+			//...supported by a Non-Mozilla cert...
+			if(isItMitM(rootCert)){ //TODO
+				//...TLS MITM proxy
+				return secTypes.MITM;
+			} else {
+				//...alternative Root CA
+				return secTypes.aRoot;
+			}
 		}
+		throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
 	} catch(e) {
+		//TODO this bit of code could be cleaner, I think
 		switch(e.status){
-		 case 'insecure':
-			return secTypes.insecure;
-		 break;
 		 case 'emptyCertChainButItsSecure':
-			//TODO: find out whytf this happens sometimes
 			console.warn(e.status||e,securityInfo);
 			return secTypes.indeterminate;
 		 break;
@@ -44,65 +46,16 @@ function identifySecType(securityInfo){
 	}
 }
 
-function genBrowserActionSpec(secType,certChain){
-	let rootHost,iconPath;
-	switch(secType){
-	 case secTypes.Mozilla:
-		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
-		return {
-			Icon: {path:`images/root_icons/${rootHost}.ico`},
-			Title: {title: `\uD83E\uDD8A ${rootHost}`},
-		//	BadgeText: {text: '\u2026'}; //TODO?
-		//	BadgeBackgroundColor: {color: 'LimeGreen'};
-		};
-	 break;
-	 case secTypes.MITM:
-		return {
-			Icon: {path:`images/Twemoji_1f441.svg`},
-			Title: {title: "MITM TLS Proxy\n(Your IT team can see what you're doing)"},
-			BadgeText: {text: '\u2026'}, //TODO: ...something?
-			BadgeBackgroundColor: {color: 'Fuchsia'}
-		};
-	 break;
-	 case secTypes.aRoot:
-		rootHost=sha256fp_host_alt[certChain[certChain.length-1].fingerprint.sha256];
-		if(rootHost){
-			iconPath=`images/alt_root_icons/${rootHost}.ico`;
-		} else {
-			iconPath='images/Twemoji_1f50f.svg';
-		}
-		return {
-			Icon: {path:iconPath},
-			Title: {title: rootHost},
-			BadgeText: {text: '\u2026'}, //TODO: which aRoot?
-			BadgeBackgroundColor: {color: 'Cyan'}
-		};
-	 break;
-	 case secTypes.indeterminate:
-		return {} //TODO???
-	 break;
-	 default:
-		return {
-			Icon: {path:`images/Twemoji_2716.svg`},
-		//	BadgeText: {text: '\u2026'};
-		//	BadgeBackgroundColor: {color: 'Grey'};
-		};
-	}
-}
-
-function updateTabBrowserAction(tabId,browserActionSpec){
-	for(let prop in browserActionSpec){
-		let cmd=new Object();
-		Object.assign(cmd,browserActionSpec[prop]);
-		Object.assign(cmd,{tabId:tabId});
-		browser.browserAction['set'+prop](cmd);
-	}
-}
-
-function isItMITM(cert){
+function isItMitM(cert){
+	//TODO check with the user about this
 	if(cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt){
+		//The cert was in EITHER database
+		//therefore it is legitimate,
+		//i.e. NOT a MitM:
 		return false;
 	} else {
+		//The cert was in NEITHER database
+		//therefore it IS a MitM:
 		return true;
 	}
 }
@@ -115,27 +68,29 @@ browser.webRequest.onHeadersReceived.addListener(
  //TODO: pester Mozilla about this
  async function onHeadersReceivedListener(details) {
 	let tabId=details.tabId;
+	let type=details.type;
 	let requestId=details.requestId;
-	let securityInfo = await browser.webRequest.getSecurityInfo(details.requestId,{certificateChain:true});
-	if(details.frameId==0){
-		return onReceivingMainFrame(tabId,securityInfo);
-	} else {
-		return onReceivingNonMainFrame(tabId,securityInfo);
+	let securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true});
+	let secType=identifySecType(securityInfo);
+	let certChain=securityInfo.certificates;
+	let browserActionSpec;
+	switch(type){
+	 case 'main_frame':
+		let browserActionSpec=genBrowserActionSpec(secType,certChain);
+		setTimeout(()=>{
+			updateTabBrowserAction(tabId,browserActionSpec);
+		},250); //TODO TODO TODO TODO
+		//I know this is absolutely disgusting, but it
+		//yields the best UX for now
+		return;
+	 break;
+	 default:
+		//TODO
+		return;
 	}
  },
  {
-  urls:['<all_urls>']
+  urls:['<all_urls>'],
  },
  ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
 );
-
-function onReceivingMainFrame(tabId,securityInfo){
-	let secType=identifySecType(securityInfo);
-	let certChain=securityInfo.certificates;
-	let browserActionSpec=genBrowserActionSpec(secType,certChain);
-	updateTabBrowserAction(tabId,browserActionSpec);
-}
-
-function onReceivingNonMainFrame(tabId,securityInfo){
-	//TODO
-}

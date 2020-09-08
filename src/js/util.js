@@ -9,7 +9,8 @@ function getAsset(path){
 const secTypes={
 	Mozilla:       0,
 	MITM:          1,
-	aRoot:         2,
+	aRootKnown:    2,
+	aRootUnknown:  3,
 	indeterminate: 254,
 	insecure:      255
 }
@@ -55,3 +56,71 @@ const sha256fp_host_alt = {'07:ED:BD:82:4A:49:88:CF:EF:42:15:DA:20:D4:8C:2B:41:D
 	});
 	Object.freeze(host_country);
 }
+
+function genBrowserActionSpec(secType,certChain){
+	let rootHost,iconPath;
+	switch(secType){
+	 case secTypes.Mozilla:
+		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
+		return {
+			Icon: {path: `images/root_icons/${rootHost}.ico`},
+			Title: {title: rootHost},
+			BadgeText: {text: '\uD83E\uDD8A'},
+			BadgeBackgroundColor: {color: 'LimeGreen'}
+		};
+	 break;
+	 case secTypes.MITM:
+		return {
+			Icon: {path: `images/Twemoji_1f441.svg`},
+			Title: {title: "MitM TLS Proxy\n(Your network administrator is inspecting this connection.)"},
+			BadgeText: {text: '\u2026'}, //TODO: ...something?
+			BadgeBackgroundColor: {color: 'Fuchsia'}
+		};
+	 break;
+	 case secTypes.aRootKnown:
+		rootHost=sha256fp_host_alt[certChain[certChain.length-1].fingerprint.sha256];
+		return {
+			Icon: {path: `images/alt_root_icons/${rootHost}.ico`},
+			Title: {title: rootHost},
+			BadgeText: {text: rootHost.slice(0,1).toUpperCase()}, //TODO
+			BadgeBackgroundColor: {color: 'Cyan'}
+		};
+	 break;
+	 case secTypes.aRootUnknown:
+		return {
+			Icon: {path: 'images/Twemoji_1f50f.svg'},
+			Title: {title: certChain[certChain.length-1].fingerprint.sha256},
+			BadgeText: {text: '\u2026'}, //TODO
+			BadgeBackgroundColor: {color: 'Cyan'}
+		};
+	 break;
+	 case secTypes.indeterminate:
+		return {} //TODO???
+	 break;
+	 default:
+		return {
+			Icon: {path: `images/Twemoji_27a0.svg`},
+			BadgeText: {text: '\u2026'},
+			BadgeBackgroundColor: {color: 'Grey'}
+		};
+	}
+}
+
+function updateTabBrowserAction(tabId,browserActionSpec){
+	for(let prop in browserActionSpec){
+		let cmd=new Object();
+		Object.assign(cmd,browserActionSpec[prop]);
+		Object.assign(cmd,{tabId:tabId});
+		browser.browserAction['set'+prop](cmd);
+	}
+}
+
+browser.runtime.onInstalled.addListener(
+ function onInstalledListener(details){
+	console.log("onInstalledListener was run!");
+	console.log(details);
+	if(details.reason=="install" || details.temporary){
+		browser.tabs.create({url:'https://github.com/JamesTheAwesomeDude/cerdicator/blob/v0.0.7/stuff/welcome.rst'});
+	}
+ }
+);
