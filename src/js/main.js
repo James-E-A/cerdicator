@@ -28,7 +28,11 @@ function identifySecType(securityInfo){
 				return secTypes.MITM;
 			} else {
 				//...alternative Root CA
-				return secTypes.aRoot;
+				if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
+					return secTypes.aRootKnown;
+				} else {
+					return secTypes.aRootUnknown;
+				}
 			}
 		}
 		throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
