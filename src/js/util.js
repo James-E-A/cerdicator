@@ -87,6 +87,6 @@ async function updateBrowserAction(tabId,browserActionSpec){
 
 browser.runtime.onInstalled.addListener(
  function onInstalledListener(details){
-	if(!details.temporary) browser.tabs.create({url:'https://github.com/JamesTheAwesomeDude/cerdicator/blob/v0.0.7/stuff/welcome.rst'});
+	if(!details.temporary) browser.tabs.create({url:'https://github.com/JamesTheAwesomeDude/cerdicator/blob/v0.0.8/stuff/welcome.rst'});
  }
 );
