@@ -18,7 +18,7 @@ function genBrowserActionSpec(secType,certChain){
 			BadgeBackgroundColor: {color: 'LimeGreen'}
 		};
 	 break;
-	 case secTypes.MITM:
+	 case secTypes.MitM:
 		return {
 			Icon: {path: `images/Twemoji_1f441.svg`},
 			Title: {title: "MitM TLS Proxy\n(Your network administrator is inspecting this connection.)"},
