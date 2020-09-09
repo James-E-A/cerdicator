@@ -11,7 +11,7 @@
 	],
 
 	"background": {
-		"scripts": ["js/main.js","js/util.js"]
+		"scripts": ["js/main.js","js/util.js","js/constants.js"]
 	},
 
 	"browser_action": {

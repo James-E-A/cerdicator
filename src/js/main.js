@@ -1,5 +1,4 @@
-const queuedBrowserActionSpecsByTabId=new Object();
-browser.browserAction.disable();
+const queuedBrowserActionSpecsByTabId=new Object();//global cache
 
 function identifySecType(securityInfo){
 	try {
@@ -69,14 +68,29 @@ function isItMitM(cert){
 
 browser.tabs.onUpdated.addListener(
  async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
-	if(tabId in queuedBrowserActionSpecsByTabId){
-		let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
-		delete queuedBrowserActionSpecsByTabId[tabId];
-		updateBrowserAction(tabId,myQueuedBrowserActionSpec);
+	switch(changeInfo.status){
+	 case('complete'):
+		if(tabId in queuedBrowserActionSpecsByTabId){
+			let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
+			delete queuedBrowserActionSpecsByTabId[tabId];
+			updateBrowserAction(tabId,myQueuedBrowserActionSpec);
+		} else {
+			browser.browserAction.disable(tabId);
+		}
+	 break;
+	 case('loading'):
+		browser.browserAction.enable(tabId);
+	 break;
 	}
  },
  {
   properties: ["status"]
+ }
+);
+
+browser.tabs.onRemoved.addListener(
+ async function onTabRemovedListener(tabId,removeInfo) {
+	delete queuedBrowserActionSpecsByTabId[tabId];
  }
 );
 
@@ -90,7 +104,7 @@ browser.webRequest.onHeadersReceived.addListener(
 	let tabId=details.tabId;
 	let type=details.type;
 	let requestId=details.requestId;
-	let securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true});
+	let securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true,rawDER:true});
 	let secType=identifySecType(securityInfo);
 	let certChain=securityInfo.certificates;
 	let browserActionSpec;
@@ -109,4 +123,10 @@ browser.webRequest.onHeadersReceived.addListener(
   urls:['<all_urls>'],
  },
  ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
+);
+
+browser.windows.onCreated.addListener(
+ async function onWindowCreatedListener(window) {
+	browser.browserAction.disable();
+ }
 );
