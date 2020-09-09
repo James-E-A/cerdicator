@@ -57,6 +57,20 @@ function genBrowserActionSpec(secType,certChain){
 	}
 }
 
+function isItMitM(cert){
+	//TODO check with the user about this
+	if(cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt){
+		//The cert was in EITHER database
+		//therefore it is legitimate,
+		//i.e. NOT a MitM:
+		return false;
+	} else {
+		//The cert was in NEITHER database
+		//therefore it IS a MitM:
+		return true;
+	}
+}
+
 async function updateBrowserAction(tabId,browserActionSpec){
 	//TODO: why does Firefox not give us an atomic version of this function??
 	let cmdDefaults={};

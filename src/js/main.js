@@ -52,20 +52,6 @@ function identifySecType(securityInfo){
 	}
 }
 
-function isItMitM(cert){
-	//TODO check with the user about this
-	if(cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt){
-		//The cert was in EITHER database
-		//therefore it is legitimate,
-		//i.e. NOT a MitM:
-		return false;
-	} else {
-		//The cert was in NEITHER database
-		//therefore it IS a MitM:
-		return true;
-	}
-}
-
 browser.tabs.onUpdated.addListener(
  async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
 	switch(changeInfo.status){
