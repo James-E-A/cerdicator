@@ -73,7 +73,7 @@ browser.tabs.onUpdated.addListener(
 		if(tabId in queuedBrowserActionSpecsByTabId){
 			let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
 			delete queuedBrowserActionSpecsByTabId[tabId];
-			updateBrowserAction(tabId,myQueuedBrowserActionSpec);
+			await updateBrowserAction(tabId,myQueuedBrowserActionSpec);
 		} else {
 			browser.browserAction.disable(tabId);
 		}

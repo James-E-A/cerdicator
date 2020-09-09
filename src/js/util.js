@@ -57,7 +57,7 @@ function genBrowserActionSpec(secType,certChain){
 	}
 }
 
-function updateBrowserAction(tabId,browserActionSpec){
+async function updateBrowserAction(tabId,browserActionSpec){
 	//TODO: why does Firefox not give us an atomic version of this function??
 	let cmdDefaults={};
 	if(tabId!=-1) cmdDefaults.tabId=tabId;
@@ -68,6 +68,7 @@ function updateBrowserAction(tabId,browserActionSpec){
 		    browserActionSpec[prop]);
 		browser.browserAction['set'+prop](cmd);
 	}
+	return;
 }
 
 browser.runtime.onInstalled.addListener(
