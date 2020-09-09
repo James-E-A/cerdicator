@@ -1,3 +1,6 @@
+const queuedBrowserActionSpecsByTabId=new Object();
+browser.browserAction.disable();
+
 function identifySecType(securityInfo){
 	try {
 		//TODO/FIXME: Mozilla doesn't provide
@@ -25,7 +28,7 @@ function identifySecType(securityInfo){
 			//...supported by a Non-Mozilla cert...
 			if(isItMitM(rootCert)){ //TODO
 				//...TLS MITM proxy
-				return secTypes.MITM;
+				return secTypes.MitM;
 			} else {
 				//...alternative Root CA
 				if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
@@ -64,6 +67,19 @@ function isItMitM(cert){
 	}
 }
 
+browser.tabs.onUpdated.addListener(
+ async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
+	if(tabId in queuedBrowserActionSpecsByTabId){
+		let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
+		delete queuedBrowserActionSpecsByTabId[tabId];
+		updateBrowserAction(tabId,myQueuedBrowserActionSpec);
+	}
+ },
+ {
+  properties: ["status"]
+ }
+);
+
 browser.webRequest.onHeadersReceived.addListener(
  //this is the only point we can getSecurityInfo.
  //this is a design flaw IMO, since it allows attackers
@@ -81,11 +97,7 @@ browser.webRequest.onHeadersReceived.addListener(
 	switch(type){
 	 case 'main_frame':
 		let browserActionSpec=genBrowserActionSpec(secType,certChain);
-		setTimeout(()=>{
-			updateTabBrowserAction(tabId,browserActionSpec);
-		},250); //TODO TODO TODO TODO
-		//I know this is absolutely disgusting, but it
-		//yields the best UX for now
+		queuedBrowserActionSpecsByTabId[tabId]=browserActionSpec;
 		return;
 	 break;
 	 default:
