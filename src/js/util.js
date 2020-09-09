@@ -13,7 +13,7 @@ function genBrowserActionSpec(secType,certChain){
 		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
 		return {
 			Icon: {path: `images/root_icons/${rootHost}.ico`},
-			Title: {title: rootHost},
+			Title: {title: `${rootHost}\n(Mozilla-trusted Root CA)`},
 			BadgeText: {text: '\uD83E\uDD8A'},
 			BadgeBackgroundColor: {color: 'LimeGreen'}
 		};
@@ -22,7 +22,7 @@ function genBrowserActionSpec(secType,certChain){
 		return {
 			Icon: {path: `images/Twemoji_1f441.svg`},
 			Title: {title: "MitM TLS Proxy\n(Your network administrator is inspecting this connection.)"},
-			BadgeText: {text: '\u2026'}, //TODO: ...something?
+			BadgeText: {text: '\u2139\uFE0F'},
 			BadgeBackgroundColor: {color: 'Fuchsia'}
 		};
 	 break;
@@ -30,16 +30,17 @@ function genBrowserActionSpec(secType,certChain){
 		rootHost=sha256fp_host_alt[certChain[certChain.length-1].fingerprint.sha256];
 		return {
 			Icon: {path: `images/alt_root_icons/${rootHost}.ico`},
-			Title: {title: rootHost},
+			Title: {title: `${rootHost}\n(Alternative Root CA)`},
 			BadgeText: {text: rootHost[0].toUpperCase()}, //TODO
-			BadgeBackgroundColor: {color: 'Cyan'}
+			BadgeBackgroundColor: {color: 'Teal'}
 		};
 	 break;
 	 case secTypes.aRootUnknown:
 		return {
+			//TODO: better support for these?
 			Icon: {path: 'images/Twemoji_1f50f.svg'},
-			Title: {title: certChain[certChain.length-1].fingerprint.sha256},
-			BadgeText: {text: '\u2026'}, //TODO
+			Title: {title: `I've\u2026never heard of this Root CA before.\n\nIts fingerprint is:\n${certChain[certChain.length-1].fingerprint.sha256}`},
+			BadgeText: {text: '\u24D8\uFE0F'},
 			BadgeBackgroundColor: {color: 'Cyan'}
 		};
 	 break;
@@ -48,8 +49,9 @@ function genBrowserActionSpec(secType,certChain){
 	 break;
 	 default:
 		return {
-			Icon: {path: 'images/Twemoji_26a0.svg'},
-			BadgeText: {text: '\u2026'},
+			Icon: {path: 'images/Twemoji_26a0.svg'}, //TODO: is this too dramatic?
+			Title: {title: "Unsecure connection."},
+			BadgeText: {text: '\u274C'},
 			BadgeBackgroundColor: {color: 'Grey'}
 		};
 	}
