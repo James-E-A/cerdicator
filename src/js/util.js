@@ -22,7 +22,7 @@ function genBrowserActionSpec(secType,certChain){
 		return {
 			Icon: {path: `images/Twemoji_1f441.svg`},
 			Title: {title: "MitM TLS Proxy\n(Your network administrator is inspecting this connection.)"},
-			BadgeText: {text: '\u2139\uFE0F'},
+			BadgeText: {text: '\u2013'},
 			BadgeBackgroundColor: {color: 'Fuchsia'}
 		};
 	 break;
