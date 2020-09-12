@@ -26,16 +26,18 @@ function identifySecType(securityInfo){
 			return secTypes.Mozilla;
 		}
 
-		//...supported by a Non-Mozilla cert...
-		if(isItMitM(rootCert)){ //TODO
-			//...TLS MITM proxy
-			return secTypes.MitM;
-		} else {
-			//...alternative Root CA
-			if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
-				return secTypes.aRootKnown;
+		if(!securityInfo.isUntrusted){//why didn't they use .isTrusted lol
+			//...supported by a Non-Mozilla cert,...
+			if(isItMitM(rootCert)){ //TODO
+				//...a TLS MITM proxy
+				return secTypes.MitM;
 			} else {
-				return secTypes.aRootUnknown;
+				//...an alternative Root CA
+				if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
+					return secTypes.aRootKnown;
+				} else {
+					return secTypes.aRootUnknown;
+				}
 			}
 		}
 
