@@ -10,7 +10,7 @@ function identifySecType(securityInfo){
 
 		let certChain=securityInfo.certificates;
 
-		if(securityInfo.isUntrusted){
+		if(certChain.length==0){
 			//TODO/FIXME: Mozilla doesn't provide
 			//any access whatsoever to self-signed
 			//or otherwise nominally-invalid certs
@@ -51,20 +51,10 @@ function identifySecType(securityInfo){
 
 browser.tabs.onUpdated.addListener(
  async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
-	switch(changeInfo.status){
-	 case('complete'):
-		if(tabId in queuedBrowserActionSpecsByTabId){
-			let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
-			delete queuedBrowserActionSpecsByTabId[tabId];
-			await updateBrowserAction(tabId,myQueuedBrowserActionSpec);
-		} else {
-			browser.browserAction.disable(tabId);
-		}
-	 break;
-	 case('loading'):
-		browser.browserAction.enable(tabId);
-	 break;
-	}
+	let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
+	if(changeInfo.status=='complete') delete queuedBrowserActionSpecsByTabId[tabId];
+	await updateBrowserAction(tabId,myQueuedBrowserActionSpec);
+	browser.browserAction.enable(tabId);
  },
  {
   properties: ["status"]
