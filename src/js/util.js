@@ -44,15 +44,20 @@ function genBrowserActionSpec(secType,certChain){
 			BadgeBackgroundColor: {color: 'Cyan'}
 		};
 	 break;
-	 case secTypes.indeterminate:
-		return {} //TODO???
+	 case secTypes.insecure:
+		return {
+			Icon: {path: 'images/Twemoji_26a0.svg'},
+			Title: {title: "Unsecure connection."},
+			BadgeText: {text: '\u2013'},
+			BadgeBackgroundColor: {color: 'Grey'}
+		}
 	 break;
 	 default:
 		return {
-			Icon: {path: 'images/Twemoji_26a0.svg'}, //TODO: is this too dramatic?
-			Title: {title: "Unsecure connection."},
+			Icon: {path: 'images/Twemoji_2753.svg'},
+			Title: {title: "Could not get security info."},
 			BadgeText: {text: '\u274C'},
-			BadgeBackgroundColor: {color: 'Grey'}
+			BadgeBackgroundColor: {color: 'DarkCyan'}
 		};
 	}
 }

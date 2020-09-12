@@ -3,7 +3,7 @@ const secTypes={
 	MitM:          1,
 	aRootKnown:    2,
 	aRootUnknown:  3,
-	indeterminate: 254,
+	unknown:       254,
 	insecure:      255
 };
 Object.freeze(secTypes);

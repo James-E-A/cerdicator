@@ -2,19 +2,20 @@ const queuedBrowserActionSpecsByTabId=new Object();//global cache
 
 function identifySecType(securityInfo){
 	try {
-		//TODO/FIXME: Mozilla doesn't provide
-		//any access whatsoever to self-signed
-		//or otherwise nominally-invalid certs
-		// https://discourse.mozilla.org/t/webrequest-getsecurityinfo-cant-get-self-signed-tofu-exception-certificates/67135
 		if(securityInfo.state!='secure'){
 			//once the above is fixed, this if-block
 			//will have to be factored out
 			return secTypes.insecure;
 		}
+
 		let certChain=securityInfo.certificates;
-		if(!certChain.length) {
-			//TODO: find out whytf this happens sometimes
-			throw {status:'emptyCertChainButItsSecure',securityInfo:securityInfo};
+
+		if(securityInfo.isUntrusted){
+			//TODO/FIXME: Mozilla doesn't provide
+			//any access whatsoever to self-signed
+			//or otherwise nominally-invalid certs
+			// https://discourse.mozilla.org/t/webrequest-getsecurityinfo-cant-get-self-signed-tofu-exception-certificates/67135
+			return secTypes.unknown;
 		}
 
 		let rootCert=certChain[certChain.length-1];
@@ -23,28 +24,24 @@ function identifySecType(securityInfo){
 		if(rootCert.isBuiltInRoot){
 			//...Mozilla-supported
 			return secTypes.Mozilla;
-		} else if(!rootCert.isUntrusted) {
-			//...supported by a Non-Mozilla cert...
-			if(isItMitM(rootCert)){ //TODO
-				//...TLS MITM proxy
-				return secTypes.MitM;
+		}
+
+		//...supported by a Non-Mozilla cert...
+		if(isItMitM(rootCert)){ //TODO
+			//...TLS MITM proxy
+			return secTypes.MitM;
+		} else {
+			//...alternative Root CA
+			if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
+				return secTypes.aRootKnown;
 			} else {
-				//...alternative Root CA
-				if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
-					return secTypes.aRootKnown;
-				} else {
-					return secTypes.aRootUnknown;
-				}
+				return secTypes.aRootUnknown;
 			}
 		}
+
 		throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
 	} catch(e) {
-		//TODO this bit of code could be cleaner, I think
 		switch(e.status){
-		 case 'emptyCertChainButItsSecure':
-			console.warn(e.status||e,securityInfo);
-			return secTypes.indeterminate;
-		 break;
 		 default:
 			console.error(e.status||e,securityInfo);
 			return -1;
