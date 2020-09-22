@@ -3,8 +3,7 @@ const queuedBrowserActionSpecsByTabId=new Object();//global cache
 function identifySecType(securityInfo){
 	try {
 		if(securityInfo.state!='secure'){
-			//once the above is fixed, this if-block
-			//will have to be factored out
+			//genuinely not HTTPS
 			return secTypes.insecure;
 		}
 
