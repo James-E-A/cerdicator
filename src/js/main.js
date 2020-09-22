@@ -101,7 +101,7 @@ browser.webRequest.onHeadersReceived.addListener(
 );
 
 browser.windows.onCreated.addListener(
- async function onWindowCreatedListener(window) {
-	browser.browserAction.disable();
+ function onWindowCreatedListener(window) {
+	browser.browserAction.disable();//This intentionally omits windowId
  }
 );
