@@ -3,6 +3,7 @@ function getAsset(path){
 	const xhr = new XMLHttpRequest();
 	xhr.open('GET',assetURL,false);
 	xhr.send();
+	if(xhr.status/100|0 != 2) throw xhr;
 	return xhr.response;
 }
 
