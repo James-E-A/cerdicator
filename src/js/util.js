@@ -91,6 +91,19 @@ function updateBrowserAction(tabId,browserActionSpec){
 
 browser.runtime.onInstalled.addListener(
  function onInstalledListener(details){
-	if(!details.temporary) browser.tabs.create({url:'https://github.com/JamesTheAwesomeDude/cerdicator/blob/v0.0.8/stuff/welcome.rst'});
+	// Only pester the user if this is a fresh installation [1],
+	// or at least a minor version bump [2].
+	let curVersion=browser.runtime.getManifest().version;
+	if( details.reason=="install" ){
+		//[1]
+		browser.tabs.create({url:`https://github.com/JamesTheAwesomeDude/cerdicator/blob/v${curVersion}/stuff/welcome.rst`});
+	} else {
+		let curMinorVersion=curVersion.split('.').splice(0,2).join('.');
+		let prevMinorVersion=details.previousVersion.split('.').splice(0,2).join('.');
+		if( curMinorVersion!=prevMinorVersion ){
+			//[2]
+			browser.tabs.create({url:`https://github.com/JamesTheAwesomeDude/cerdicator/blob/v${curVersion}/stuff/welcome.rst`});
+		}
+	}
  }
 );
