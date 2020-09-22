@@ -14,6 +14,7 @@ const sha256fp_host_alt = new Object();
 
 //TODO TODO TODO TODO TODO TODO TODO
 sha256fp_host_alt['07:ED:BD:82:4A:49:88:CF:EF:42:15:DA:20:D4:8C:2B:41:D7:15:29:D7:C9:00:F5:70:92:6F:27:7C:C2:30:C5']='cacert.org';
+sha256fp_host_alt['89:4E:BC:0B:23:DA:2A:50:C0:18:6B:7F:8F:25:EF:1F:6B:29:35:AF:32:A9:45:84:EF:80:AA:F8:77:A3:A0:6E']='us';//fpki.gov=us
 Object.freeze(sha256fp_host_alt);
 
 {
