@@ -76,12 +76,11 @@ function isItMitM(cert){
 	}
 }
 
-async function updateBrowserAction(tabId,browserActionSpec){
-	//TODO: why does Firefox not give us an atomic version of this function??
+function updateBrowserAction(tabId,browserActionSpec){
+	//TODO: why does[?] Firefox not give us an atomic version of this function??
 	let cmdDefaults={};
 	if(tabId!=-1) cmdDefaults.tabId=tabId;
 	for(let prop in browserActionSpec){
-		//consider parallelizing this loop to mitigate possible race condition meanwhile
 		let cmd=Object.assign(new Object(),
 		    cmdDefaults,
 		    browserActionSpec[prop]);
