@@ -77,7 +77,7 @@ function isItMitM(cert){
 	}
 }
 
-function updateBrowserAction(cmdDefaults={},browserActionSpec,extraCmds=[]){
+function applyBrowserActionSpec(cmdDefaults={},browserActionSpec,extraCmds=[]){
 	//TODO: why does[?] Firefox not give us an atomic version of this function??
 	for(let prop in browserActionSpec){
 		let cmd=Object.assign(new Object(),
