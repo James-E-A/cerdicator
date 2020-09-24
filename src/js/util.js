@@ -77,17 +77,15 @@ function isItMitM(cert){
 	}
 }
 
-function updateBrowserAction(tabId,browserActionSpec){
+function updateBrowserAction(cmdDefaults={},browserActionSpec,extraCmds=[]){
 	//TODO: why does[?] Firefox not give us an atomic version of this function??
-	let cmdDefaults={};
-	if(tabId!=-1) cmdDefaults.tabId=tabId;
 	for(let prop in browserActionSpec){
 		let cmd=Object.assign(new Object(),
 		    cmdDefaults,
 		    browserActionSpec[prop]);
 		browser.browserAction['set'+prop](cmd);
 	}
-	return;
+	return extraCmds.map(cmd=>browser.browserAction[cmd]());
 }
 
 browser.runtime.onInstalled.addListener(

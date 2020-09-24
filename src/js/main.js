@@ -54,8 +54,7 @@ browser.tabs.onUpdated.addListener(
  async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
 	let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
 	if(changeInfo.status=='complete') delete queuedBrowserActionSpecsByTabId[tabId];
-	await updateBrowserAction(tabId,myQueuedBrowserActionSpec);
-	browser.browserAction.enable(tabId);
+	await updateBrowserAction({tabId:tabId},myQueuedBrowserActionSpec,['enable']);
  },
  {
   properties: ["status"]
