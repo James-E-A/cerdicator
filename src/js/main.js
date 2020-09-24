@@ -2,10 +2,13 @@ const queuedBrowserActionSpecsByTabId=new Object();//global cache
 
 function identifySecType(securityInfo){
 	try {
-		if(securityInfo.state=='insecure'){
-			//genuinely not HTTPS
-			return secTypes.insecure;
-		}
+	 switch(securityInfo.state){
+	  case 'insecure':
+
+		//genuinely not HTTPS
+		return secTypes.insecure;
+
+	  case 'secure':
 
 		let certChain=securityInfo.certificates;
 
@@ -39,8 +42,9 @@ function identifySecType(securityInfo){
 				}
 			}
 		}
-
-		throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
+	  default:
+		 throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
+	 }
 	} catch(e) {
 		switch(e.status){
 		 default:
