@@ -94,16 +94,17 @@ browser.runtime.onInstalled.addListener(
  function onInstalledListener(details){
 	// Only pester the user if this is a fresh installation [1],
 	// or at least a minor version bump [2].
+	let openPathInTab=path=>browser.tabs.create({url:browser.runtime.getURL(path)});
 	let curVersion=browser.runtime.getManifest().version;
 	if( details.reason=="install" ){
 		//[1]
-		browser.tabs.create({url:`https://github.com/JamesTheAwesomeDude/cerdicator/blob/v${curVersion}/stuff/welcome.rst`});
+		openPathInTab('db/welcome/install.htm');
 	} else {
 		let curMinorVersion=curVersion.split('.').splice(0,2).join('.');
 		let prevMinorVersion=details.previousVersion.split('.').splice(0,2).join('.');
 		if( curMinorVersion!=prevMinorVersion ){
 			//[2]
-			browser.tabs.create({url:`https://github.com/JamesTheAwesomeDude/cerdicator/blob/v${curVersion}/stuff/welcome.rst`});
+			//openPathInTab('db/welcome/update.htm');//TODO
 		}
 	}
  }
