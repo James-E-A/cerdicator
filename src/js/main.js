@@ -1,4 +1,4 @@
-const queuedBrowserActionSpecsByTabId=new Object();//global cache
+const cachedSecurityInfosByTabIdAndURL=new Object();//global cache
 
 function identifySecType(securityInfo){
 	try {
@@ -9,7 +9,6 @@ function identifySecType(securityInfo){
 		return secTypes.insecure;
 
 	  case 'secure':
-
 		let certChain=securityInfo.certificates;
 
 		if(certChain.length==0){
@@ -48,17 +47,26 @@ function identifySecType(securityInfo){
 	} catch(e) {
 		switch(e.status){
 		 default:
-			console.error(e.status||e,securityInfo);
-			return -1;
+			console.error(e.status||e,{securityInfo:securityInfo});
+			return secTypes.unknown;
 		}
 	}
 }
 
 browser.tabs.onUpdated.addListener(
- async function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
-	let myQueuedBrowserActionSpec=queuedBrowserActionSpecsByTabId[tabId];
-	if(changeInfo.status=='complete') delete queuedBrowserActionSpecsByTabId[tabId];
-	await updateBrowserAction({tabId:tabId},myQueuedBrowserActionSpec,['enable']);
+ function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
+	let securityInfo,letType,certChain,browserActionSpec,extraCmds=[];
+	try {
+		securityInfo=cachedSecurityInfosByTabIdAndURL[tabId][tabInfo.url];
+		if(changeInfo.status=='complete' && securityInfo) extraCmds={enable:tabId};
+		secType=identifySecType(securityInfo);
+		certChain=securityInfo.certificates;
+		browserActionSpec=genBrowserActionSpec(secType,certChain);
+	} catch(e) {
+		secType=secTypes.unknown;
+	} finally {
+		applyBrowserActionSpec({tabId:tabId},browserActionSpec,extraCmds);
+	}
  },
  {
   properties: ["status"]
@@ -67,7 +75,7 @@ browser.tabs.onUpdated.addListener(
 
 browser.tabs.onRemoved.addListener(
  async function onTabRemovedListener(tabId,removeInfo) {
-	delete queuedBrowserActionSpecsByTabId[tabId];
+	delete cachedSecurityInfosByTabIdAndURL[tabId];
  }
 );
 
@@ -81,14 +89,12 @@ browser.webRequest.onHeadersReceived.addListener(
 	let tabId=details.tabId;
 	let type=details.type;
 	let requestId=details.requestId;
+	let requestUrl=details.url;
 	let securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true,rawDER:true});
-	let secType=identifySecType(securityInfo);
-	let certChain=securityInfo.certificates;
-	let browserActionSpec;
 	switch(type){
 	 case 'main_frame':
-		let browserActionSpec=genBrowserActionSpec(secType,certChain);
-		queuedBrowserActionSpecsByTabId[tabId]=browserActionSpec;
+		if(!(tabId in cachedSecurityInfosByTabIdAndURL)) cachedSecurityInfosByTabIdAndURL[tabId]={};
+		cachedSecurityInfosByTabIdAndURL[tabId][requestUrl]=securityInfo;
 		return;
 	 break;
 	 default:

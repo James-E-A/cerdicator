@@ -77,15 +77,17 @@ function isItMitM(cert){
 	}
 }
 
-function applyBrowserActionSpec(cmdDefaults={},browserActionSpec,extraCmds=[]){
+function applyBrowserActionSpec(propCmdDefaults={},browserActionSpec,extraCmds={}){
 	//TODO: why does[?] Firefox not give us an atomic version of this function??
 	for(let prop in browserActionSpec){
 		let cmd=Object.assign(new Object(),
-		    cmdDefaults,
+		    propCmdDefaults,
 		    browserActionSpec[prop]);
 		browser.browserAction['set'+prop](cmd);
 	}
-	return extraCmds.map(cmd=>browser.browserAction[cmd]());
+	for(let cmd in extraCmds){
+		browser.browserAction[cmd](extraCmds[cmd]);
+	}
 }
 
 browser.runtime.onInstalled.addListener(
