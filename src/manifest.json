@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "cerdicator",
-	"version": "0.0.9",
+	"version": "0.0.10",
 
 	"description": "Enhanced TLS indicator with an emphasis on information about the Root Certificate Authority from which the connection's authenticity is derived.",
 
