@@ -1,4 +1,5 @@
 const cachedSecurityInfosByTabIdAndURL=new Object();//global cache
+browser.browserAction.disable();//This intentionally omits windowId
 
 function identifySecType(securityInfo){
 	try {
@@ -106,10 +107,4 @@ browser.webRequest.onHeadersReceived.addListener(
   urls:['<all_urls>'],
  },
  ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
-);
-
-browser.windows.onCreated.addListener(
- function onWindowCreatedListener(window) {
-	browser.browserAction.disable();//This intentionally omits windowId
- }
 );
