@@ -56,7 +56,7 @@ function identifySecType(securityInfo){
 
 browser.tabs.onUpdated.addListener(
  function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
-	let securityInfo,letType,certChain,browserActionSpec,extraCmds=[];
+	let securityInfo,secType,certChain,browserActionSpec,extraCmds=[];
 	try {
 		securityInfo=cachedSecurityInfosByTabIdAndURL[tabId][tabInfo.url];
 		if(changeInfo.status=='complete' && securityInfo) extraCmds={enable:tabId};
