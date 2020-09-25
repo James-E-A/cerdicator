@@ -7,6 +7,13 @@ function getAsset(path){
 	return xhr.response;
 }
 
+function removeFragment(url){
+	//Removes the fragment from a URL
+	let u=new URL(url);
+	u.hash='';
+	return u.toString();
+}
+
 function intDiv(a,b=100){
 	//Functions as e.g. Python's integer division
 	//Divides then casts directly to integer

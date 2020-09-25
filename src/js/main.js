@@ -58,7 +58,8 @@ browser.tabs.onUpdated.addListener(
  function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
 	let securityInfo,secType,certChain,browserActionSpec,extraCmds=[];
 	try {
-		securityInfo=cachedSecurityInfosByTabIdAndURL[tabId][tabInfo.url];
+		let url=removeFragment(tabInfo.url);
+		securityInfo=cachedSecurityInfosByTabIdAndURL[tabId][url];
 		if(changeInfo.status=='complete' && securityInfo) extraCmds={enable:tabId};
 		secType=identifySecType(securityInfo);
 		certChain=securityInfo.certificates;
