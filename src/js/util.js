@@ -22,7 +22,7 @@ function intDiv(a,b=100){
 
 function genBrowserActionSpec(secType,certChain){
 	let rootHost,iconPath;
-	switch(secType){
+	switch(secType) {
 	 case secTypes.Mozilla:
 		rootHost=sha256fp_host[certChain[certChain.length-1].fingerprint.sha256];
 		return {
@@ -78,7 +78,7 @@ function genBrowserActionSpec(secType,certChain){
 
 function isItMitM(cert){
 	//TODO check with the user about this
-	if(cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt){
+	if( cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt ) {
 		//The cert was in EITHER database
 		//therefore it is legitimate,
 		//i.e. NOT a MitM:
@@ -92,8 +92,8 @@ function isItMitM(cert){
 
 function applyBrowserActionSpec(propCmdDefaults={},browserActionSpec,extraCmds={}){
 	//TODO: why does[?] Firefox not give us an atomic version of this function??
-	for(let prop in browserActionSpec){
-		let cmd=Object.assign(new Object(),
+	for(let prop in browserActionSpec) {
+		let cmd = Object.assign(new Object(),
 		    propCmdDefaults,
 		    browserActionSpec[prop]);
 		browser.browserAction['set'+prop](cmd);
@@ -107,18 +107,21 @@ browser.runtime.onInstalled.addListener(
  function onInstalledListener(details){
 	// Only pester the user if this is a fresh installation [1],
 	// or at least a minor version bump [2].
-	let openPathInTab=path=>browser.tabs.create({url:browser.runtime.getURL(path)});
-	let curVersion=browser.runtime.getManifest().version;
-	if( details.reason=="install" ){
+	let openPathInTab = path=>browser.tabs.create({url:browser.runtime.getURL(path)});
+	let curVersion = browser.runtime.getManifest().version;
+	if( details.reason == "install" ) {
 		//[1]
 		openPathInTab('db/welcome/install.htm');
 	} else {
-		let curMinorVersion=curVersion.split('.').splice(0,2).join('.');
-		let prevMinorVersion=details.previousVersion.split('.').splice(0,2).join('.');
-		if( curMinorVersion!=prevMinorVersion ){
+		let curMinorVersion = curVersion.split('.').splice(0,2).join('.');
+		let prevMinorVersion = details.previousVersion.split('.').splice(0,2).join('.');
+		if( curMinorVersion != prevMinorVersion ) {
 			//[2]
 			//openPathInTab('db/welcome/update.htm');//TODO
 		}
 	}
  }
 );
+
+browser.browserAction.disable();//This should be greyed-out by default
+
