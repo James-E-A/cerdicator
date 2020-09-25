@@ -95,7 +95,7 @@ browser.webRequest.onHeadersReceived.addListener(
 	let securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true,rawDER:true});
 	switch(type){
 	 case 'main_frame':
-		if(!(tabId in cachedSecurityInfosByTabIdAndURL)) cachedSecurityInfosByTabIdAndURL[tabId]={};
+		if(!(tabId in cachedSecurityInfosByTabIdAndURL)) cachedSecurityInfosByTabIdAndURL[tabId]=new Object();
 		cachedSecurityInfosByTabIdAndURL[tabId][requestUrl]=securityInfo;
 		return;
 	 break;
