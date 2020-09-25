@@ -3,8 +3,14 @@ function getAsset(path){
 	const xhr = new XMLHttpRequest();
 	xhr.open('GET',assetURL,false);
 	xhr.send();
-	if((xhr.status/100|0) != 2) throw xhr;
+	if(intDiv(xhr.status,100) != 2) throw xhr;
 	return xhr.response;
+}
+
+function intDiv(a,b=100){
+	//Functions as e.g. Python's integer division
+	//Divides then casts directly to integer
+	return a/b>>0;
 }
 
 function genBrowserActionSpec(secType,certChain){
