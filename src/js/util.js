@@ -128,6 +128,10 @@ function getAsset(path,type=null){
 	}
 }
 
+function flag(s){
+	return String.fromCodePoint(...s.split('').map(u=>u.codePointAt()+127365));
+}
+
 function removeFragment(url){
 	//Removes the fragment from a URL
 	//TODO? iff profiler indicts this function:
@@ -148,7 +152,7 @@ function genBrowserActionSpec(secType=null,caId=null){
 	 case secTypes.Mozilla:
 		return {
 			Icon: {path: `images/root_icons/${caId}.ico`},
-			Title: {title: `${caId}\n(Mozilla-trusted Root CA)`},
+			Title: {title: `${flag(host_country[caId]||'XX')} ${caId}\n(Mozilla-trusted Root CA)`},
 			BadgeText: {text: '\uD83E\uDD8A'},
 			BadgeBackgroundColor: {color: 'LimeGreen'}
 		};
