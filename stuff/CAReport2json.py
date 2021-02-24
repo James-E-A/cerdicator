@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import sys, csv, json
+from sys import stdin, stdout
+import csv, json
 
 # https://wiki.mozilla.org/CA/Included_Certificates
 """Usage:
@@ -10,5 +11,5 @@ curl https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReportCS
 
 # two lines of code
 # this script is nearly objective
-CACertificateReport = list(csv.DictReader(sys.stdin))
-json.dump(CACertificateReport, sys.stdout, indent=2)
+CACertificateReport = list(csv.DictReader(stdin))
+json.dump(CACertificateReport, stdout, indent=2)
