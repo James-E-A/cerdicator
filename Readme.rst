@@ -37,7 +37,7 @@ Today
 
 I intend to follow in the footsteps of the paper (linked in the appendix below) which Dr. Soghoian wrote alongside Dr. `Sid Stamm`_ analyzing the threat models presented by this device, and in particular intend to write the spiritual successor to their software introduced therein, `CertLock`_.
 
-In particular, his software is written under the following assumptions:
+In particular, this software will be written under the following assumptions:
 
 (1) Mr. Saulino is lying through his teeth here *(presumably under NDA)*
 
