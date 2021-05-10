@@ -15,7 +15,7 @@ Why It Exists
 
 https://archive.is/o/www.wired.com/2010/03/packet-forensics/#selection-2513.25-2513.243
 
-https://www.eff.org/observatory#:~:text=the%20650-odd%20organizations%20that%20function%20as%20Certificate%20Authorities%20trusted%20%29directly%20or%20indirectly%28%20by%20Mozilla%20or%20Microsoft.
+https://www.eff.org/observatory#:~:text=650-odd%20organizations%20that%20function%20as%20Certificate%20Authorities%20trusted%20%29directly%20or%20indirectly%28%20by%20Mozilla%20or%20Microsoft.
 
 According to tech blogger `Ryan Singel`_, writing for *Wired* magazine in 2010, privacy researcher `Christopher Soghoian`_ found a brochure at a wiretapping conference in which `Packet Forensics, LLC`_ advertised a device that [all emphasis added]:
 
