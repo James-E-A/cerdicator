@@ -45,7 +45,7 @@ In particular, this software will be written under the following assumptions:
 
 (3) The brochure acquired at the conference was both genuine (actually published by Packet Forensics) and truthful (the product it advertises performs as claimed)
 
-I reached out to both Wired and Dr. Soghoian on May 8th, 2021 to see about getting a copy of the brochure, which I could not find online; I will update this document when or if I hear back. (In retrospect, I probably should have CC'd Ryan Singel, too…)
+I reached out to both Wired and Dr. Soghoian on May 8th, 2021 to see about getting a copy of the brochure, which I could not find online; I will update this document when or if I hear back. (In retrospect, I probably should have CC'd Ryan Singel, too…) **EDIT:** I'm an idiot and didn't realize that they included the relevant pages at the end of their paper. 😳
 
 .. _`Ryan Singel`: http://ryansingel.net/
 .. _`Christopher Soghoian`: https://www.dubfire.net/
@@ -62,5 +62,5 @@ Quacking Crazy PDFs
 First-Order Related to this problem
 ===================================
 
-* https://www.linuxglobal.com/static/blog/ssl-mitm.pdf
+* `/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf <https://cloudflare-ipfs.com/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf>`_
 * https://www.eff.org/files/defconssliverse.pdf (Search for “Number of trusted certificate signers” - wow!)
