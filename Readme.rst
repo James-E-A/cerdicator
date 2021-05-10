@@ -53,7 +53,7 @@ I reached out to both Wired and Dr. Soghoian on May 8th, 2021 to see about getti
 .. _`Sid Stamm`: https://sidstamm.com/
 .. _`CertLock`: https://code.google.com/archive/p/certlock/source/default/source
 
-.. image:: https://i.imgflip.com/58xyii.jpg
+.. image:: https://i.imgflip.com/58y0io.jpg
 
 
 Quacking Crazy PDFs
