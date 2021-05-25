@@ -1,5 +1,5 @@
-import cairosvg.surface
-from PIL import Image
+import cairosvg.surface  # https://cairosvg.org/
+from PIL import Image  # https://python-pillow.org/
 from io import BytesIO
 
 
