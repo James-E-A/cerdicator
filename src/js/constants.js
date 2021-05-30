@@ -37,6 +37,7 @@ fp_host_alt.set('B1:07:B3:3F:45:3E:55:10:F6:8E:51:31:10:C6:F6:94:4B:AC:C2:63:DF:
 //Record the SHA-256 Fingerprint -> (reduced) hostname mappings
 //As well as non-idiopathic SHA-256 Fingerprint -> country mappings
 getAsset("db/IncludedCACertificateReport.json", "json")
+.filter(ca => new Set(ca['Trust Bits'].split(';')).has('Websites'))
 .forEach(ca => {
 	const fp = ca[fp_alg_key].replaceAll(/(\w{2})(?=\w)/g,'$1:');
 	//perforate the fingerprints with : every 2 characters
