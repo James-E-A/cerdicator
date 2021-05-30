@@ -47,7 +47,7 @@ class SecurityDetails {
 					//TODO/FIXME: Mozilla doesn't provide
 					//any access whatsoever to self-signed
 					//or otherwise nominally-invalid certs
-					// https://discourse.mozilla.org/t/webrequest-getsecurityinfo-cant-get-self-signed-tofu-exception-certificates/67135
+					// https://bugzilla.mozilla.org/show_bug.cgi?id=1678492
 					return secTypes.unknown;
 				} else if( certChain.length == 1 ) {
 					
@@ -69,7 +69,7 @@ class SecurityDetails {
 						return secTypes.MitM;
 					} else {
 						//...an alternative Root CA
-						if(certChain[certChain.length-1].fingerprint.sha256 in sha256fp_host_alt) {
+						if(certChain[certChain.length-1].fingerprint[fp_alg] in fp_host_alt) {
 							return secTypes.aRootKnown;
 						} else {
 							return secTypes.aRootUnknown;
@@ -94,14 +94,14 @@ class SecurityDetails {
 				return 'self';
 			} else {
 				const rootCert = certChain[certChain.length-1];
-				const sha256fp = rootCert.fingerprint.sha256;
-				if( sha256fp in sha256fp_host){
-					return sha256fp_host[sha256fp];
-				} else if( sha256fp in sha256fp_host_alt ){
-					return sha256fp_host_alt[sha256fp];
+				const fp = rootCert.fingerprint[fp_alg];
+				if( fp in fp_host){
+					return fp_host.get(fp);
+				} else if( fp_host_alt.has(fp) ){
+					return fp_host_alt.get(fp);
 				} else {
 					console.warn('Unknown CA',certChain);
-					return sha256fp;
+					return fp;
 				}
 			}
 			throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
@@ -147,19 +147,19 @@ function intDiv(a,b){
 	return a/b>>0;
 }
 
-function genBrowserActionSpec(secType=null,caId=null){
+function genBrowserActionSpec(secType=null, caId=null){
 	switch(secType) {
 	 case secTypes.Mozilla:
 		return {
 			Icon: {path: `images/root_icons/${caId}.ico`},
-			Title: {title: `${flag(host_country[caId]||'XX')} ${caId}\n(Mozilla-trusted Root CA)`},
+			Title: {title: `${flag(host_country.get(caId)||'XX')} ${caId}\n(Mozilla-trusted Root CA)`},
 			BadgeText: {text: '\uD83E\uDD8A'},
 			BadgeBackgroundColor: {color: 'LimeGreen'}
 		};
 	 case secTypes.MitM:
 		return {
 			Icon: {path: `images/Twemoji_1f441.svg`},
-			Title: {title: "MitM TLS Proxy\n(Your network administrator is inspecting this connection.)"},
+			Title: {title: "MitM TLS Proxy\n(This network's administrator is eavesdropping your connection; you have no reasonable expectation of privacy here.)"},
 			BadgeText: {text: '\u2013'},
 			BadgeBackgroundColor: {color: 'Fuchsia'}
 		};
@@ -197,7 +197,7 @@ function genBrowserActionSpec(secType=null,caId=null){
 
 function isItMitM(cert){
 	//TODO check with the user about this
-	if( cert.fingerprint.sha256 in sha256fp_host || cert.fingerprint.sha256 in sha256fp_host_alt ) {
+	if( fp_host.has(cert.fingerprint[fp_alg]) || fp_host_alt.has(cert.fingerprint[fp_alg]) ) {
 		//The cert was in EITHER database
 		//therefore it is legitimate,
 		//i.e. NOT a MitM:
@@ -267,23 +267,26 @@ function match0(s,r){
 	}
 }
 
-function identifyCountry(hostname,only_gov=false){
-	const exceptionRe = /^(?:uk|ac|eu)$/ ; //https://en.wikipedia.org/wiki/Country_code_top-level_domain#ASCII_ccTLDs_not_in_ISO_3166-1
+function identifyCountry(hostname, only_gov=false){ 
 	const h = hostname.split ? hostname.split('.') : hostname;
 	const len = h.length;
 	const tld = len >= 1 ? h[len-1] : null;
 	const sld = len >= 2 ? h[len-2] : null;
 
-	if( tld.length == 2 ) {
-		if( only_gov && sld != 'gov' ) return null;
-		switch( match0(tld,exceptionRe) ) {
-		 case 'uk':
-			//Britain owns+uses this one
-			return 'gb';
-		 case 'ac':
-			//Ascension Island is part of the British Overseas territory
-			//"Saint Helena, Ascension and Tristan da Cunha"
-			return 'sh';
+	if( country_tld_exceptions.has(tld) ) return country_tld_exceptions.get(tld);
+	else return null;
+	if( only_gov && sld != 'gov' ) return null;
+	if
+	switch( match0(tld,exceptionRe) ) {
+	 case 'uk':
+		
+		return 'gb';
+	 case 'ac':
+		
+		return 'sh';
+	 case 'gov':
+		
+		return 'us';
 		 case null:
 			//2-letter TLD *not* in the exception list;
 			//it's a valid ccTLD corresponding to its country
@@ -293,9 +296,6 @@ function identifyCountry(hostname,only_gov=false){
 			//it's not a valid ccTLD and we don't know the country
 			return null;
 		}
-	} else if( tld == 'gov' ) {
-		//AMERICAAA
-		return 'us';
 	} else {
 		return null;
 	}
@@ -321,7 +321,7 @@ function reduceHostname(hostname){
 	if( h[0] == 'pki') h.splice(0,1);
 
 	// 3.
-	const govCountry = identifyCountry(h,true);
+	const govCountry = identifyCountry(h, true);
 	if( govCountry ) return govCountry;
 
 	return h.join('.');

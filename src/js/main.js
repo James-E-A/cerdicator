@@ -1,13 +1,13 @@
 //Global cache of SecurityDetails objects:
-const cachedSecurityDetails=new Object();
+const cachedSecurityDetails=new Map();
 
 browser.tabs.onUpdated.addListener(
  function onTabUpdatedStatusListener(tabId,changeInfo,tabInfo){
 	let browserActionSpec = genBrowserActionSpec(secTypes.unknown);
 	let extraCmds = {};
 	try {
-		const url = removeFragment(tabInfo.url);
-		const securityDetails = cachedSecurityDetails[tabId][url];
+		const host = new URL(tabInfo.url).host;
+		const securityDetails = cachedSecurityDetails.get(tabId).get(host);
 		if( changeInfo.status == 'complete' && securityDetails ) extraCmds.enable = tabId;
 		browserActionSpec = genBrowserActionSpec(securityDetails.secType,securityDetails.caId);
 	} finally {
@@ -21,27 +21,28 @@ browser.tabs.onUpdated.addListener(
 
 browser.tabs.onRemoved.addListener(
  async function onTabRemovedListener(tabId,removeInfo){
-	delete cachedSecurityDetails[tabId];
+	cachedSecurityDetails.delete(tabId);
  }
 );
 
-//this is the only point we can getSecurityInfo.
-//this is a design flaw IMO, since it allows attackers
-//to intercept at least one outbound request (no matter
-//how well we code) before detection.
-//TODO: pester Mozilla about this
+// Until or unless Mozilla fixes https://bugzilla.mozilla.org/show_bug.cgi?id=1499592
+// attackers may intercept at least one outbound request
+// (no matter how well we code) before detection.
+// blocked by the following upstream bug with Priority: P5
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1499592
 browser.webRequest.onHeadersReceived.addListener(
  async function onHeadersReceivedListener(details){
 	const tabId = details.tabId;
 	const type = details.type;
 	const requestId = details.requestId;
-	const requestUrl = removeFragment(details.url);
+	const host = new URL(details.url).host;
 	const securityInfo = await browser.webRequest.getSecurityInfo(requestId,{certificateChain:true,rawDER:true});
 	switch(type){
 	 case 'main_frame':
-		if(!( tabId in cachedSecurityDetails )) cachedSecurityDetails[tabId] = new Object();
+		// TODO
+		if( !cachedSecurityDetails.has(tabId) ) cachedSecurityDetails.set(tabId, new Map());
 		const secDetails = new SecurityDetails(details, securityInfo);
-		return cachedSecurityDetails[tabId][requestUrl] = secDetails;
+		return cachedSecurityDetails.get(tabId).set(host, secDetails);
 	 default:
 		//TODO
 		return;
@@ -52,3 +53,4 @@ browser.webRequest.onHeadersReceived.addListener(
  },
  ['blocking'] //this has to be blocking, or getSecurityInfo doesn't work
 );
+
