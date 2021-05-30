@@ -1,117 +1,5 @@
 browser.browserAction.disable();//This should be greyed-out by default
 
-class SecurityDetails {
-	constructor(requestDetails,securityInfo) {
-		this.securityInfo = securityInfo;
-		this.requestDetails = requestDetails;
-
-		Object.freeze(this.securityInfo);
-		Object.freeze(this.requestDetails);
-
-		//lazily-evaluated:
-		this._secType=undefined;
-		this._caId=undefined;
-	}
-
-	get secType() {
-		if( this._secType === undefined ) {
-			this._secType = SecurityDetails.identifySecType(this.securityInfo);
-		}
-		return this._secType;
-	}
-
-	get caId() {
-		if( this._caId === undefined ) {
-			this._caId = SecurityDetails.identifyCaId(this.securityInfo);
-		}
-		return this._caId;
-	}
-
-	static identifySecType(securityInfo){
-		//Takes in a browser.webRequest.getSecurityInfo object
-		//and returns an integer from secTypes corresponding to the 
-		try {
-			switch(securityInfo.state) {
-			 case 'insecure':
-				//genuinely not HTTPS
-
-				return secTypes.insecure;
-
-			 case 'secure':
-				// ANY HTTPS-secured connection //
-
-				const certChain=securityInfo.certificates;
-
-				//If it's length-0 -OR- somehow undefined/null/etc
-				if(!( certChain.length >= 1 )) {
-					//TODO/FIXME: Mozilla doesn't provide
-					//any access whatsoever to self-signed
-					//or otherwise nominally-invalid certs
-					// https://bugzilla.mozilla.org/show_bug.cgi?id=1678492
-					return secTypes.unknown;
-				} else if( certChain.length == 1 ) {
-					
-					return secTypes.selfSigned;
-				}
-
-				const rootCert = certChain[certChain.length-1];
-
-				//Now, this connection is...
-				if(rootCert.isBuiltInRoot){
-					//...Mozilla-supported
-					return secTypes.Mozilla;
-				}
-
-				if(!securityInfo.isUntrusted){//why didn't they use .isTrusted lol
-					//...supported by a Non-Mozilla cert,...
-					if(isItMitM(rootCert)){ //TODO
-						//...a TLS MITM proxy
-						return secTypes.MitM;
-					} else {
-						//...an alternative Root CA
-						if(certChain[certChain.length-1].fingerprint[fp_alg] in fp_host_alt) {
-							return secTypes.aRootKnown;
-						} else {
-							return secTypes.aRootUnknown;
-						}
-					}
-				}
-			 default:
-				throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
-			}
-		} catch(e) {
-			console.error(e.status||e,{securityInfo:securityInfo});
-			return secTypes.unknown;
-		}
-	}
-
-	static identifyCaId(securityInfo) {
-		try {
-			const certChain = securityInfo.certificates;
-			if( ! certChain.length ) {
-				return null;
-			} else if( certChain.length == 1 ) {
-				return 'self';
-			} else {
-				const rootCert = certChain[certChain.length-1];
-				const fp = rootCert.fingerprint[fp_alg];
-				if( fp in fp_host){
-					return fp_host.get(fp);
-				} else if( fp_host_alt.has(fp) ){
-					return fp_host_alt.get(fp);
-				} else {
-					console.warn('Unknown CA',certChain);
-					return fp;
-				}
-			}
-			throw {status:'thisShouldNeverHappen',securityInfo:securityInfo};
-		} catch(e) {
-			console.error(e.status||e,{securityInfo:securityInfo});
-			return null;
-		}
-	}
-}
-
 function getAsset(path,type=null){
 	const assetURL = browser.runtime.getURL(path);
 	const xhr = new XMLHttpRequest();
@@ -132,12 +20,12 @@ function flag(s){
 	return String.fromCodePoint(...s.split('').map(u=>u.codePointAt()+127365));
 }
 
-function removeFragment(url){
+function urldefrag(url){
 	//Removes the fragment from a URL
 	//TODO? iff profiler indicts this function:
 	// return url.match(/^[^#]*/)[0];
-	let u=new URL(url);
-	u.hash="";
+	let u = new URL(url);
+	u.hash = "";
 	return u.toString();
 }
 
@@ -152,7 +40,7 @@ function genBrowserActionSpec(secType=null, caId=null){
 	 case secTypes.Mozilla:
 		return {
 			Icon: {path: `images/root_icons/${caId}.ico`},
-			Title: {title: `${flag(host_country.get(caId)||'XX')} ${caId}\n(Mozilla-trusted Root CA)`},
+			Title: {title: `${flag(identifyCountry(caId)||'XX')} ${caId}\n(Mozilla-trusted Root CA)`},
 			BadgeText: {text: '\uD83E\uDD8A'},
 			BadgeBackgroundColor: {color: 'LimeGreen'}
 		};
@@ -166,8 +54,8 @@ function genBrowserActionSpec(secType=null, caId=null){
 	 case secTypes.aRootKnown:
 		return {
 			Icon: {path: `images/alt_root_icons/${caId}.ico`},
-			Title: {title: `${caId}\n(Alternative Root CA)`},
-			BadgeText: {text: rootHost[0].toUpperCase()}, //TODO
+			Title: {title: `${flag(identifyCountry(caId)||'XX')} ${caId}\n(Alternative Root CA)`},
+			BadgeText: {text: caId[0]}, //TODO
 			BadgeBackgroundColor: {color: 'Teal'}
 		};
 	 case secTypes.aRootUnknown:
@@ -269,36 +157,15 @@ function match0(s,r){
 
 function identifyCountry(hostname, only_gov=false){ 
 	const h = hostname.split ? hostname.split('.') : hostname;
+	if( host_country.has(h.join('.')) ) return host_country.get(h.join('.'));
 	const len = h.length;
 	const tld = len >= 1 ? h[len-1] : null;
 	const sld = len >= 2 ? h[len-2] : null;
 
+	if( only_gov && sld != 'gov' && tld != 'gov' ) return null;
+
 	if( country_tld_exceptions.has(tld) ) return country_tld_exceptions.get(tld);
-	else return null;
-	if( only_gov && sld != 'gov' ) return null;
-	if
-	switch( match0(tld,exceptionRe) ) {
-	 case 'uk':
-		
-		return 'gb';
-	 case 'ac':
-		
-		return 'sh';
-	 case 'gov':
-		
-		return 'us';
-		 case null:
-			//2-letter TLD *not* in the exception list;
-			//it's a valid ccTLD corresponding to its country
-			return tld;
-		 default:
-			//2-letter TLD *in* the exception list (e.g.: .eu);
-			//it's not a valid ccTLD and we don't know the country
-			return null;
-		}
-	} else {
-		return null;
-	}
+	else if( tld.length == 2 ) return tld;
 }
 
 function reduceHostname(hostname){
