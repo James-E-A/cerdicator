@@ -62,5 +62,5 @@ Quacking Crazy PDFs
 First-Order Related to this problem
 ===================================
 
-* `/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf <https://cloudflare-ipfs.com/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf>`_
+* `/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf <https://s3.amazonaws.com/files.cloudprivacy.net/ssl-mitm.pdf>`_
 * https://www.eff.org/files/defconssliverse.pdf (Search for “Number of trusted certificate signers” - wow!)
