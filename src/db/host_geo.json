@@ -1,0 +1,152 @@
+{
+    "godaddy.com": {
+        "Country": "US",
+        "State/Province": "Arizona",
+        "City/Locality": "Scottsdale"
+    },
+    "gov": {
+        "Country": "US",
+        "State/Province": "District of Columbia",
+        "City/Locality": "Washington"
+    },
+    "goog": {
+        "Country": "US",
+        "State/Province": "California",
+        "City/Locality": "Mountain View"
+    },
+    "letsencrypt.org": {
+        "Country": "US",
+        "State/Province": "California",
+        "City/Locality": "San Francisco"
+    },
+    "trustwave.com": {
+        "Country": "US",
+        "State/Province": "Illinois",
+        "City/Locality": "Chicago"
+    },
+    "ssl.com": {
+        "Country": "US",
+        "State/Province": "Texas",
+        "City/Locality": "Houston"
+    },
+    "digicert.com": {
+        "Country": "US",
+        "State/Province": "Utah",
+        "City/Locality": "Lehi"
+    },
+    "identrust.com": {
+        "Country": "US",
+        "State/Province": "Utah",
+        "City/Locality": "Salt Lake City"
+    },
+    "networksolutions.com": {
+        "Country": "US",
+        "State/Province": "Virginia",
+        "City/Locality": "Herndon"
+    },
+    "amazontrust.com": {
+        "Country": "US",
+        "State/Province": "Washington",
+        "City/Locality": "North Seattle"
+    },
+    "microsoft.com": {
+        "Country": "US",
+        "State/Province": "Washington",
+        "City/Locality": "Redmond"
+    },
+    "entrust.net": {
+        "Country": "CA",
+        "State/Province": "Ontario",
+        "City/Locality": "Ottawa"
+    },
+    "trustcorsystems.com": {
+        "Country": "CA",
+        "State/Province": "Ontario",
+        "City/Locality": "Toronto"
+    },
+    "trustis.com": {
+        "Country": "GB",
+        "State/Province": "Berkshire",
+        "City/Locality": "Thatcham"
+    },
+    "sectigo.com": {
+        "Country": "GB",
+        "State/Province": "Greater Manchester",
+        "City/Locality": "Salford"
+    },
+    "globalsign.com": {
+        "Country": "BE",
+        "State/Province": "Vlaams-Brabant",
+        "City/Locality": "Leuven"
+    },
+    "quovadisglobal.com": {
+        "Country": "BM",
+        "State/Province": "Pembroke Parish",
+        "City/Locality": "Hamilton"
+    },
+    "atos.net": {
+        "Country": "DE",
+        "State/Province": "Niedersachsen",
+        "City/Locality": "Meppen"
+    },
+    "wisekey.com": {
+        "Country": "CH",
+        "State/Province": "République et canton de Genève",
+        "City/Locality": "Genève"
+    },
+    "swisssign.com": {
+        "Country": "CH",
+        "State/Province": "Kanton Zürich",
+        "City/Locality": "Glattbrugg"
+    },
+    "aoc.cat": {
+        "Country": "ES",
+        "State/Province": "Cataluña",
+        "City/Locality": "Barcelona"
+    },
+    "firmaprofesional.com": {
+        "Country": "ES",
+        "State/Province": "Cataluña",
+        "City/Locality": "Barcelona"
+    },
+    "camerfirma.com": {
+        "Country": "ES",
+        "State/Province": "Comunidad de Madrid",
+        "City/Locality": "Madrid"
+    },
+    "izenpe.com": {
+        "Country": "ES",
+        "State/Province": "Álava",
+        "City/Locality": "Vitoria-Gasteiz"
+    },
+    "teliasonera.com": {
+        "Country": "FI",
+        "State/Province": "Uudenmaan maakunta",
+        "City/Locality": "Helsingin kaupunki"
+    },
+    "cacert.org": {
+        "Country": "NL",
+        "State/Province": "Gelderland",
+        "City/Locality": "Ede"
+    },
+    "certum.eu": {
+        "Country": "PL",
+        "State/Province": "Województwo zachodniopomorskie",
+        "City/Locality": "Szczecin"
+    },
+    "emudhra.com": {
+        "Country": "IN",
+        "State/Province": "ಕರ್ನಾಟಕ",
+        "City/Locality": "ಬೆಂಗಳೂರು"
+    },
+    "secomtrust.net": {
+        "Country": "JP",
+        "State/Province": "東京都",
+        "City/Locality": "三鷹市"
+    },
+    "sheca.com": {
+        "Country": "CN",
+        "State/Province": "上海市",
+        "City/Locality": "虹口区"
+    }
+}	
