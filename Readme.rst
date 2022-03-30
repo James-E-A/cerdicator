@@ -5,16 +5,13 @@ What It Does
 
 This software enhances the display of TLS connections by displaying at-a-glance the Root Certificate Authority that your browser trusts to certify the connection.
 
-Future releases will include country-of-jurisdiction display, enhanced and user-friendly certificate pinning, Intermediate Certificate Authority display, and **other requested features** (submit your ideas `here <https://github.com/JamesTheAwesomeDude/cerdicator/issues>`_!).
+Future releases will include country-of-jurisdiction display, enhanced and user-friendly certificate pinning, Intermediate Certificate Authority display, and **other requested features** (submit your ideas `here <https://github.com/JamesTheAwesomeDude/cerdicator/discussions>`_!).
 
 For maximum effectiveness, replace the blank, empty spacer that exists OOTB in Firefox between your URL bar and the navigation buttons with this add-on's badge. (Chrome support pending on `CH\#1187713 <https://bugs.chromium.org/p/chromium/issues/detail?id=1187713>`_.)
 
 
 Why It Exists
 #############
-
-Context
-=======
 
 https://archive.is/o/www.wired.com/2010/03/packet-forensics/#selection-2513.25-2513.243
 
@@ -33,7 +30,7 @@ then added that
   “…there is nothing special or unique about it… Our target community is the law enforcement community.”
 
 Today
-=====
+#####
 
 I intend to follow in the footsteps of the paper (linked in the appendix below) which Dr. Soghoian wrote alongside Dr. `Sid Stamm`_ analyzing the threat models presented by this device, and in particular intend to write the spiritual successor to their software introduced therein, `CertLock`_.
 
@@ -44,8 +41,6 @@ In particular, this software will be written under the following assumptions:
 (2) Both Mr. Singel and Dr. Soghoian are being truthful in their reports
 
 (3) The brochure acquired at the conference was both genuine (actually published by Packet Forensics) and truthful (the product it advertises performs as claimed)
-
-I reached out to both Wired and Dr. Soghoian on May 8th, 2021 to see about getting a copy of the brochure, which I could not find online; I will update this document when or if I hear back. (In retrospect, I probably should have CC'd Ryan Singel, too…) **EDIT:** I'm an idiot and didn't realize that they included the relevant pages at the end of their paper. 😳
 
 .. _`Ryan Singel`: http://ryansingel.net/
 .. _`Christopher Soghoian`: https://www.dubfire.net/
@@ -62,5 +57,8 @@ Quacking Crazy PDFs
 First-Order Related to this problem
 ===================================
 
-* `/ipfs/QmVSSCvbYX8XHVcf2kqrpGGmH5PdCbgAP11CCJXrrJQ2yJ?filename=ssl-mitm.pdf <https://s3.amazonaws.com/files.cloudprivacy.net/ssl-mitm.pdf>`_
-* https://www.eff.org/files/defconssliverse.pdf (Search for “Number of trusted certificate signers” - wow!)
+* `ssl-mitm.pdf`_
+* `defconssliverse.pdf`_ (Search for “Number of trusted certificate signers” - wow!)
+
+.. _`ssl-mitm.pdf`: http://webpages.uah.edu/~je0029/archive/dubfire.net/ssl-mitm.pdf
+.. _`defconssliverse.pdf`: https://www.eff.org/files/defconssliverse.pdf
