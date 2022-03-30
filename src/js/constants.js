@@ -32,7 +32,6 @@ const fp_host_alt = new Map();
 //TODO TODO TODO TODO TODO TODO TODO
 fp_host_alt.set('07:ED:BD:82:4A:49:88:CF:EF:42:15:DA:20:D4:8C:2B:41:D7:15:29:D7:C9:00:F5:70:92:6F:27:7C:C2:30:C5', 'cacert.org');
 fp_host_alt.set('89:4E:BC:0B:23:DA:2A:50:C0:18:6B:7F:8F:25:EF:1F:6B:29:35:AF:32:A9:45:84:EF:80:AA:F8:77:A3:A0:6E', 'gov');  // fpki.gov
-fp_host_alt.set('B1:07:B3:3F:45:3E:55:10:F6:8E:51:31:10:C6:F6:94:4B:AC:C2:63:DF:01:37:F8:21:C1:B3:C2:F8:F8:63:D2', 'gov');  // whytf does the DoD have so many roots, and why was this one never cross-signed?
 
 // Record the Fingerprint -> (reduced) hostname mappings
 // As well as non-idiopathic Fingerprint -> country mappings
