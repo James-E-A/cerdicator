@@ -70,7 +70,14 @@ function genBrowserActionSpec(secType=null, caId=null){
 			Icon: {path: 'images/Twemoji_1f50f.svg'},
 			Title: {title: `I've\u2026never heard of this Root CA before.\n\nWe seem to be identifying it as:\n${caId}`},
 			BadgeText: {text: '\u24D8\uFE0F'},
-			BadgeBackgroundColor: {color: 'Cyan'}
+			BadgeBackgroundColor: {color: 'Aqua'}
+		};
+	 case secTypes.selfSigned:
+		return {
+			Icon: {path: 'images/Twemoji_1f365.svg'},
+			Title: {title: `Self-signed connection (trust-on-first-use).`},
+			BadgeText: {text: '\u2609\uFE0E'},
+			BadgeBackgroundColor: {color: 'Olive'}
 		};
 	 case secTypes.insecure:
 		return {
