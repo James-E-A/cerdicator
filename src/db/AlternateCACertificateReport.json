@@ -1,0 +1,52 @@
+[
+  {
+    "Owner": "CAcert Inc.",
+    "Certificate Issuer Organization": "CAcert",
+    "Certificate Issuer Organizational Unit": "http://www.cacert.org",
+    "Common Name or Certificate Name": "CA Cert Signing Authority",
+    "Certificate Serial Number": "F",
+    "SHA-256 Fingerprint": "07EDBD824A4988CFEF4215DA20D48C2B41D71529D7C900F570926F277CC230C5",
+    "Valid From [GMT]": "2003.03.30",
+    "Valid To [GMT]": "2033.03.29",
+    "Public Key Algorithm": "RSA 4096 bits",
+    "Signature Hash Algorithm": "SHA256WithRSA",
+    "Approval Bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=215243",
+    "Company Website": "http://www.cacert.org",
+    "Geographic Focus": "Global",
+    "Certificate Policy (CP)": "http://www.cacert.org/policy/CertificationPracticeStatement.html",
+    "Certification Practice Statement (CPS)": "http://www.cacert.org/policy/CertificationPracticeStatement.html",
+    "Standard Audit": "https://iang.org/audit/",
+    "Auditor": "Ian Grigg",
+    "Standard Audit Statement Dt": "2009.06.12"
+  },
+  {
+    "Owner": "U.S. Government",
+    "Certificate Issuer Organization": "Federal PKI Management Authority",
+    "Certificate Issuer Organizational Unit": "FPKI",
+    "Common Name or Certificate Name": "Federal Common Policy CA",
+    "Certificate Serial Number": "130",
+    "SHA-256 Fingerprint": "894EBC0B23DA2A50C0186B7F8F25EF1F6B2935AF32A94584EF80AAF877A3A06E",
+    "Valid From [GMT]": "2010.12.01",
+    "Valid To [GMT]": "2030.12.01",
+    "Public Key Algorithm": "RSA 2048 bits",
+    "Signature Hash Algorithm": "SHA256WithRSA",
+    "Approval Bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=478418",
+    "Company Website": "https://playbooks.idmanagement.gov/fpki/",
+    "Geographic Focus": "USA"
+  },
+  {
+    "Owner": "Russian Government",
+    "Certificate Issuer Organization": "The Ministry of Digital Development and Communications",
+    "Certificate Issuer Organizational Unit": "Public Services",
+    "Common Name or Certificate Name": "Russian Trusted Root CA",
+    "Certificate Serial Number": "1000",
+    "SHA-256 Fingerprint": "D26D2D0231B7C39F92CC738512BA54103519E4405D68B5BD703E9788CA8ECF31",
+    "Valid From [GMT]": "2022.03.01",
+    "Valid To [GMT]": "2032.02.27",
+    "Public Key Algorithm": "RSA 4096 bits",
+    "Signature Hash Algorithm": "SHA256WithRSA",
+    "Approval Bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=1758773",
+    "Company Website": "https://www.gosuslugi.ru/tls",
+    "Geographic Focus": "Russia"
+  }
+]

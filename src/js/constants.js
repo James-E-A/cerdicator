@@ -39,9 +39,7 @@ fp_host_alt.set('D2:6D:2D:02:31:B7:C3:9F:92:CC:73:85:12:BA:54:10:35:19:E4:40:5D:
 getAsset("db/IncludedCACertificateReport.json", "json")
 .filter(ca => new Set(ca['Trust Bits'].split(';')).has('Websites'))
 .forEach(ca => {
-	const fp = ca[fp_alg_key].replaceAll(/(\w{2})(?=\w)/g,'$1:');
-	//perforate the fingerprints with : every 2 characters
-	//(i.e. convert from CCADB-format to Firefox-format)
+	const fp = ccadb2ff_fp(ca[fp_alg_key]);
 
 	const host = reduceHostname(new URL(ca["Company Website"]).hostname);
 

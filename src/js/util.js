@@ -16,6 +16,12 @@ function getAsset(path,type=null){
 	}
 }
 
+function ccadb2ff_fp(s) {
+	//perforate the fingerprints with : every 2 characters
+	//(i.e. convert from CCADB-format to Firefox-format)
+	return s.replaceAll(/(\w{2})(?=\w)/g, '$1:');
+}
+
 function flag(s){
 	return String.fromCodePoint(...s.split('').map(u=>u.codePointAt()+127365));
 }
