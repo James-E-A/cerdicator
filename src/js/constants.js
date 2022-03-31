@@ -13,17 +13,7 @@ const secTypes = {
 Object.freeze(secTypes);
 
 // https://en.wikipedia.org/wiki/Country_code_top-level_domain#ASCII_ccTLDs_not_in_ISO_3166-1
-const country_tld_exceptions = new Map([
-	// AMERICAA
-	['gov', 'us'],
-	// Britain owns+uses this one
-	['uk', 'gb'],
-	// Ascension Island is part of the British Overseas territory,
-	// "Saint Helena, Ascension and Tristan da Cunha"
-	['ac', 'sh'],
-	// European Union
-	['eu', null]
-]);
+const country_tld_exceptions = new Map(Object.entries(getAsset("db/cctld_overrides.json", "json")));
 
 const fp_host = new Map();
 const host_country = new Map();
