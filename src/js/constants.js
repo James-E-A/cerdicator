@@ -1,6 +1,8 @@
 const fp_alg = 'sha256';
 const fp_alg_key = fp_alg.replace(/(\w+?)(\d+)/, (m, alg, n) => `${alg.toUpperCase()}-${n} Fingerprint`)
 
+const issue_tracker_url = 'https://github.com/JamesTheAwesomeDude/cerdicator/issues';
+
 const secTypes = {
 	Mozilla:       0,
 	MitM:          1,
@@ -43,7 +45,7 @@ getAsset("db/IncludedCACertificateReport.json", "json")
 Object.entries(getAsset("db/host_geo.json","json"))
 .forEach(([host, geo]) => {
 	if( host_country.has(host) ) {
-		console.warn("Overwriting country! Database may need to be checked.\nIf you're seeing this, please open an issue on GitHub; include the following:",
+		console.warn(`Overwriting country! Database may need to be checked.\nIf you're seeing this, please open an issue on the issue tracker (${issue_tracker_url}); include the following:`,
 		 {
 			host: host,
 			currently: host_country.get(host),
