@@ -1,0 +1,18 @@
+{
+  "name": "cerdicator",
+  "version": "0.1.0",
+  "description": "Enhanced TLS indicator with an emphasis on information about the Root Certificate Authority from which the connection's authenticity is derived",
+  "scripts": {
+    "test": "snowpack test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesTheAwesomeDude/cerdicator.git"
+  },
+  "author": "James Edington",
+  "license": "(MIT OR GLWTPL OR MPL-2.0)",
+  "bugs": {
+    "url": "https://github.com/JamesTheAwesomeDude/cerdicator/issues"
+  },
+  "homepage": "https://github.com/JamesTheAwesomeDude/cerdicator#readme"
+}

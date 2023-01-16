@@ -1,0 +1,32 @@
+{
+	"manifest_version": 2,
+	"name": "cerdicator",
+	"version": "0.1.0",
+
+	"description": "Enhanced TLS indicator with an emphasis on information about the Root Certificate Authority from which the connection's authenticity is derived.",
+
+	"permissions": [
+		"webRequest","webRequestBlocking",
+		"tabs",
+		"<all_urls>"
+	],
+
+	"background": {
+		"page": "background.html",
+		"persistent": false
+	},
+
+	"browser_action": {
+		"default_title": "cerdicator",
+		"default_icon": "images/Twemoji_1f9ff.svg"
+	},
+
+	"web_accessible_resources": ["db/*"],
+
+	"browser_specific_settings": {
+	 "gecko": {
+		"id": "{9fb104df-0496-4b3a-bd43-08e56d46766e}",
+		"strict_min_version": "62.0"
+	 }
+	}
+}
