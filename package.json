@@ -14,5 +14,10 @@
   "bugs": {
     "url": "https://github.com/JamesTheAwesomeDude/cerdicator/issues"
   },
-  "homepage": "https://github.com/JamesTheAwesomeDude/cerdicator#readme"
+  "homepage": "https://github.com/JamesTheAwesomeDude/cerdicator#readme",
+  "devDependencies": {
+    "snowpack": "^3.8.8",
+    "web-ext": "^7.4.0",
+    "snowpack-plugin-web-ext": "^0.1.2"
+  }
 }
